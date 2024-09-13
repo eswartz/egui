@@ -1269,6 +1269,10 @@ fn key_from_key_code(key: winit::keyboard::KeyCode) -> Option<egui::Key> {
         KeyCode::F34 => Key::F34,
         KeyCode::F35 => Key::F35,
 
+        KeyCode::Pause => Key::Pause,
+        KeyCode::ScrollLock => Key::ScrollLock,
+        KeyCode::PrintScreen => Key::PrintScreen,
+
         _ => {
             return None;
         }

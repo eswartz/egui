@@ -188,6 +188,9 @@ pub enum Key {
     /// Android sends this key on Back button press.
     /// Does not work on Web.
     BrowserBack,
+    Pause,
+    ScrollLock,
+    PrintScreen,
     // When adding keys, remember to also update:
     // * crates/egui-winit/src/lib.rs
     // * Key::ALL
@@ -314,6 +317,10 @@ impl Key {
         Self::F35,
         // Navigation keys:
         Self::BrowserBack,
+        //
+        Self::Pause,
+        Self::ScrollLock,
+        Self::PrintScreen,
     ];
 
     /// Converts `"A"` to `Key::A`, `Space` to `Key::Space`, etc.
@@ -443,6 +450,9 @@ impl Key {
             "F35" => Self::F35,
 
             "BrowserBack" => Self::BrowserBack,
+            "Pause" => Self::Pause,
+            "ScrollLock" => Self::ScrollLock,
+            "PrintScreen" => Self::PrintScreen,
 
             _ => return None,
         })
@@ -599,6 +609,9 @@ impl Key {
             Self::F35 => "F35",
 
             Self::BrowserBack => "BrowserBack",
+            Self::Pause => "Pause",
+            Self::ScrollLock => "ScrollLock",
+            Self::PrintScreen => "PrintScreen",
         }
     }
 }
