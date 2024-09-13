@@ -174,6 +174,10 @@ pub enum Key {
     F33,
     F34,
     F35,
+
+    Pause,
+    ScrollLock,
+    PrintScreen,
     // When adding keys, remember to also update:
     // * crates/egui-winit/src/lib.rs
     // * Key::ALL
@@ -295,6 +299,10 @@ impl Key {
         Self::F33,
         Self::F34,
         Self::F35,
+        //
+        Self::Pause,
+        Self::ScrollLock,
+        Self::PrintScreen,
     ];
 
     /// Converts `"A"` to `Key::A`, `Space` to `Key::Space`, etc.
@@ -419,6 +427,10 @@ impl Key {
             "F33" => Self::F33,
             "F34" => Self::F34,
             "F35" => Self::F35,
+
+            "Pause" => Self::Pause,
+            "ScrollLock" => Self::ScrollLock,
+            "PrintScreen" => Self::PrintScreen,
 
             _ => return None,
         })
@@ -567,6 +579,10 @@ impl Key {
             Self::F33 => "F33",
             Self::F34 => "F34",
             Self::F35 => "F35",
+
+            Self::Pause => "Pause",
+            Self::ScrollLock => "ScrollLock",
+            Self::PrintScreen => "PrintScreen",
         }
     }
 }
