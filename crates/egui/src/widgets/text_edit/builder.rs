@@ -85,6 +85,7 @@ pub struct TextEdit<'t> {
     char_limit: usize,
     return_key: Option<KeyboardShortcut>,
     background_color: Option<Color32>,
+    page_rows: usize,
 }
 
 impl<'t> WidgetWithState for TextEdit<'t> {
@@ -144,6 +145,7 @@ impl<'t> TextEdit<'t> {
             char_limit: usize::MAX,
             return_key: Some(KeyboardShortcut::new(Modifiers::NONE, Key::Enter)),
             background_color: None,
+            page_rows: 0,
         }
     }
 
@@ -389,6 +391,14 @@ impl<'t> TextEdit<'t> {
         self.return_key = return_key.into();
         self
     }
+
+    /// Set the page size in rows of the [`TextEdit`].
+    #[inline]
+    pub fn page_rows(mut self, page_rows: usize) -> Self {
+        self.page_rows = page_rows;
+        self
+    }
+
 }
 
 // ----------------------------------------------------------------------------
@@ -490,6 +500,7 @@ impl<'t> TextEdit<'t> {
             char_limit,
             return_key,
             background_color: _,
+            page_rows,
         } = self;
 
         let text_color = text_color
@@ -635,6 +646,7 @@ impl<'t> TextEdit<'t> {
                 char_limit,
                 event_filter,
                 return_key,
+                page_rows,
             );
 
             if changed {
@@ -872,6 +884,7 @@ fn events(
     char_limit: usize,
     event_filter: EventFilter,
     return_key: Option<KeyboardShortcut>,
+    page_rows: usize,
 ) -> (bool, CursorRange) {
     let os = ui.ctx().os();
 
@@ -903,7 +916,7 @@ fn events(
     for event in &events {
         let did_mutate_text = match event {
             // First handle events that only changes the selection cursor, not the text:
-            event if cursor_range.on_event(os, event, galley, id) => None,
+            event if cursor_range.on_event(os, event, galley, id, page_rows) => None,
 
             Event::Copy => {
                 if cursor_range.is_empty() {
