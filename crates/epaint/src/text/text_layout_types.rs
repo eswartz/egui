@@ -1116,11 +1116,11 @@ impl Galley {
         self.from_ccursor(ccursor + 1)
     }
 
-    pub fn cursor_up_one_row(&self, cursor: &Cursor) -> Cursor {
-        if cursor.rcursor.row == 0 {
+    pub fn cursor_up_n_rows(&self, cursor: &Cursor, nrows: usize) -> Cursor {
+        if cursor.rcursor.row < nrows {
             Cursor::default()
         } else {
-            let new_row = cursor.rcursor.row - 1;
+            let new_row = cursor.rcursor.row - nrows;
 
             let cursor_is_beyond_end_of_current_row = cursor.rcursor.column
                 >= self.rows[cursor.rcursor.row].char_count_excluding_newline();
@@ -1149,9 +1149,9 @@ impl Galley {
         }
     }
 
-    pub fn cursor_down_one_row(&self, cursor: &Cursor) -> Cursor {
-        if cursor.rcursor.row + 1 < self.rows.len() {
-            let new_row = cursor.rcursor.row + 1;
+    pub fn cursor_down_n_rows(&self, cursor: &Cursor, nrows: usize) -> Cursor {
+        if cursor.rcursor.row + nrows < self.rows.len() {
+            let new_row = cursor.rcursor.row + nrows;
 
             let cursor_is_beyond_end_of_current_row = cursor.rcursor.column
                 >= self.rows[cursor.rcursor.row].char_count_excluding_newline();
@@ -1181,6 +1181,14 @@ impl Galley {
         } else {
             self.end()
         }
+    }
+
+    pub fn cursor_up_one_row(&self, cursor: &Cursor) -> Cursor {
+        self.cursor_up_n_rows(cursor, 1)
+    }
+
+    pub fn cursor_down_one_row(&self, cursor: &Cursor) -> Cursor {
+        self.cursor_down_n_rows(cursor, 1)
     }
 
     pub fn cursor_begin_of_row(&self, cursor: &Cursor) -> Cursor {
