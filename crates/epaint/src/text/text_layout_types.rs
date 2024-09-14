@@ -1071,7 +1071,7 @@ impl Galley {
         }
     }
 
-    fn cursor_from_layout(&self, layout_cursor: LayoutCursor) -> CCursor {
+    pub fn cursor_from_layout(&self, layout_cursor: LayoutCursor) -> CCursor {
         if layout_cursor.row >= self.rows.len() {
             return self.end();
         }

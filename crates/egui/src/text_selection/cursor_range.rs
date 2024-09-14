@@ -115,6 +115,7 @@ impl CCursorRange {
         &mut self,
         os: OperatingSystem,
         galley: &Galley,
+        page_rows: usize,
         modifiers: &Modifiers,
         key: Key,
     ) -> bool {
@@ -137,6 +138,8 @@ impl CCursorRange {
             | Key::ArrowRight
             | Key::ArrowUp
             | Key::ArrowDown
+            | Key::PageUp
+            | Key::PageDown
             | Key::Home
             | Key::End => {
                 move_single_cursor(
@@ -144,6 +147,7 @@ impl CCursorRange {
                     &mut self.primary,
                     &mut self.h_pos,
                     galley,
+                    page_rows,
                     key,
                     modifiers,
                 );
@@ -161,6 +165,7 @@ impl CCursorRange {
                     &mut self.primary,
                     &mut self.h_pos,
                     galley,
+                    page_rows,
                     key,
                     modifiers,
                 );
@@ -180,6 +185,7 @@ impl CCursorRange {
         os: OperatingSystem,
         event: &Event,
         galley: &Galley,
+        page_rows: usize,
         _widget_id: Id,
     ) -> bool {
         match event {
@@ -188,7 +194,7 @@ impl CCursorRange {
                 key,
                 pressed: true,
                 ..
-            } => self.on_key_press(os, galley, modifiers, *key),
+            } => self.on_key_press(os, galley, page_rows, modifiers, *key),
 
             #[cfg(feature = "accesskit")]
             Event::AccessKitActionRequest(accesskit::ActionRequest {
@@ -250,6 +256,7 @@ fn move_single_cursor(
     cursor: &mut CCursor,
     h_pos: &mut Option<f32>,
     galley: &Galley,
+    page_rows: usize,
     key: Key,
     modifiers: &Modifiers,
 ) {
@@ -302,7 +309,22 @@ fn move_single_cursor(
                         galley.cursor_down_one_row(cursor, *h_pos)
                     }
                 }
-
+                Key::PageUp => {
+                    let mut new_cursor = *cursor;
+                    let mut new_h_pos = *h_pos;
+                    for _ in 0..page_rows {
+                        (new_cursor, new_h_pos) = galley.cursor_up_one_row(&new_cursor, new_h_pos);
+                    }
+                    (new_cursor, new_h_pos)
+                }
+                Key::PageDown => {
+                    let mut new_cursor = *cursor;
+                    let mut new_h_pos = *h_pos;
+                    for _ in 0..page_rows {
+                        (new_cursor, new_h_pos) = galley.cursor_down_one_row(&new_cursor, new_h_pos);
+                    }
+                    (new_cursor, new_h_pos)
+                }
                 Key::Home => {
                     if modifiers.ctrl {
                         // windows behavior

@@ -550,7 +550,7 @@ impl LabelSelectionState {
 
             if let Some(selection) = &self.selection {
                 if selection.primary.widget_id == response.id {
-                    process_selection_key_events(ui.ctx(), galley, response.id, &mut cursor_range);
+                    process_selection_key_events(ui.ctx(), galley, 1, response.id, &mut cursor_range);
                 }
             }
 
@@ -671,6 +671,7 @@ fn got_copy_event(ctx: &Context) -> bool {
 fn process_selection_key_events(
     ctx: &Context,
     galley: &Galley,
+    page_rows: usize,
     widget_id: Id,
     cursor_range: &mut CCursorRange,
 ) -> bool {
@@ -682,7 +683,7 @@ fn process_selection_key_events(
         // NOTE: we have a lock on ui/ctx here,
         // so be careful to not call into `ui` or `ctx` again.
         for event in &i.events {
-            changed |= cursor_range.on_event(os, event, galley, widget_id);
+            changed |= cursor_range.on_event(os, event, galley, page_rows, widget_id);
         }
     });
 

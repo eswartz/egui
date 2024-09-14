@@ -81,6 +81,7 @@ pub struct TextEdit<'t> {
     interactive: bool,
     desired_width: Option<f32>,
     desired_height_rows: usize,
+    page_rows: usize,
     event_filter: EventFilter,
     cursor_at_end: bool,
     min_size: Vec2,
@@ -134,6 +135,7 @@ impl<'t> TextEdit<'t> {
             interactive: true,
             desired_width: None,
             desired_height_rows: 4,
+            page_rows: 1,
             event_filter: EventFilter {
                 // moving the cursor is really important
                 horizontal_arrows: true,
@@ -396,6 +398,13 @@ impl<'t> TextEdit<'t> {
         self.return_key = return_key.into();
         self
     }
+
+    /// Set the page size in rows of the [`TextEdit`].
+    #[inline]
+    pub fn page_rows(mut self, page_rows: usize) -> Self {
+        self.page_rows = page_rows;
+        self
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -485,6 +494,7 @@ impl TextEdit<'_> {
             interactive,
             desired_width,
             desired_height_rows,
+            page_rows,
             event_filter,
             cursor_at_end,
             min_size,
@@ -639,6 +649,7 @@ impl TextEdit<'_> {
                 password,
                 default_cursor_range,
                 char_limit,
+                page_rows,
                 event_filter,
                 return_key,
             );
@@ -915,6 +926,7 @@ fn events(
     password: bool,
     default_cursor_range: CCursorRange,
     char_limit: usize,
+    page_rows: usize,
     event_filter: EventFilter,
     return_key: Option<KeyboardShortcut>,
 ) -> (bool, CCursorRange) {
@@ -948,7 +960,7 @@ fn events(
     for event in &events {
         let did_mutate_text = match event {
             // First handle events that only changes the selection cursor, not the text:
-            event if cursor_range.on_event(os, event, galley, id) => None,
+            event if cursor_range.on_event(os, event, galley, page_rows, id) => None,
 
             Event::Copy => {
                 if cursor_range.is_empty() {
