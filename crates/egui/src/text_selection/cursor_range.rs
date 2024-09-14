@@ -124,6 +124,7 @@ impl CursorRange {
         galley: &Galley,
         modifiers: &Modifiers,
         key: Key,
+        page_rows: usize,
     ) -> bool {
         match key {
             Key::A if modifiers.command => {
@@ -144,9 +145,11 @@ impl CursorRange {
             | Key::ArrowRight
             | Key::ArrowUp
             | Key::ArrowDown
+            | Key::PageUp
+            | Key::PageDown
             | Key::Home
             | Key::End => {
-                move_single_cursor(os, &mut self.primary, galley, key, modifiers);
+                move_single_cursor(os, &mut self.primary, galley, key, modifiers, page_rows);
                 if !modifiers.shift {
                     self.secondary = self.primary;
                 }
@@ -156,7 +159,7 @@ impl CursorRange {
             Key::P | Key::N | Key::B | Key::F | Key::A | Key::E
                 if os == OperatingSystem::Mac && modifiers.ctrl && !modifiers.shift =>
             {
-                move_single_cursor(os, &mut self.primary, galley, key, modifiers);
+                move_single_cursor(os, &mut self.primary, galley, key, modifiers, page_rows);
                 self.secondary = self.primary;
                 true
             }
@@ -174,6 +177,7 @@ impl CursorRange {
         event: &Event,
         galley: &Galley,
         _widget_id: Id,
+        page_rows: usize,
     ) -> bool {
         match event {
             Event::Key {
@@ -181,7 +185,7 @@ impl CursorRange {
                 key,
                 pressed: true,
                 ..
-            } => self.on_key_press(os, galley, modifiers, *key),
+            } => self.on_key_press(os, galley, modifiers, *key, page_rows),
 
             #[cfg(feature = "accesskit")]
             Event::AccessKitActionRequest(accesskit::ActionRequest {
@@ -308,6 +312,7 @@ fn move_single_cursor(
     galley: &Galley,
     key: Key,
     modifiers: &Modifiers,
+    page_rows: usize,
 ) {
     if os == OperatingSystem::Mac && modifiers.ctrl && !modifiers.shift {
         match key {
@@ -357,6 +362,12 @@ fn move_single_cursor(
             } else {
                 *cursor = galley.cursor_down_one_row(cursor);
             }
+        }
+        Key::PageUp => {
+            *cursor = galley.cursor_up_n_rows(cursor, page_rows);
+        }
+        Key::PageDown => {
+            *cursor = galley.cursor_down_n_rows(cursor, page_rows);
         }
 
         Key::Home => {
