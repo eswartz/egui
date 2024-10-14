@@ -535,7 +535,13 @@ impl LabelSelectionState {
 
             if let Some(selection) = &self.selection {
                 if selection.primary.widget_id == response.id {
-                    process_selection_key_events(ui.ctx(), galley, response.id, &mut cursor_range, 1);
+                    process_selection_key_events(
+                        ui.ctx(),
+                        galley,
+                        response.id,
+                        &mut cursor_range,
+                        1,
+                    );
                 }
             }
 
