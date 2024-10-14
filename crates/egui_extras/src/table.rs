@@ -182,6 +182,7 @@ struct TableScrollOptions {
     vscroll: bool,
     drag_to_scroll: bool,
     stick_to_bottom: bool,
+    force_to_bottom: bool,
     scroll_to_row: Option<(usize, Option<Align>)>,
     scroll_offset_y: Option<f32>,
     min_scrolled_height: f32,
@@ -197,6 +198,7 @@ impl Default for TableScrollOptions {
             vscroll: true,
             drag_to_scroll: true,
             stick_to_bottom: false,
+            force_to_bottom: false,
             scroll_to_row: None,
             scroll_offset_y: None,
             min_scrolled_height: 200.0,
@@ -342,6 +344,14 @@ impl<'a> TableBuilder<'a> {
     #[inline]
     pub fn stick_to_bottom(mut self, stick: bool) -> Self {
         self.scroll_options.stick_to_bottom = stick;
+        self
+    }
+
+    /// Force scrolling to the bottom (only makes sense when stick_to_bottom is true).
+    /// Use to forget the sticky position from a previous manual scroll_to_row.
+    #[inline]
+    pub fn force_to_bottom(mut self, force: bool) -> Self {
+        self.scroll_options.force_to_bottom = force;
         self
     }
 
@@ -732,6 +742,7 @@ impl Table<'_> {
             vscroll,
             drag_to_scroll,
             stick_to_bottom,
+            force_to_bottom,
             scroll_to_row,
             scroll_offset_y,
             min_scrolled_height,
@@ -794,7 +805,7 @@ impl Table<'_> {
                     hovered_row_index_id,
                 });
 
-                if scroll_to_row.is_some() && scroll_to_y_range.is_none() {
+                if force_to_bottom || scroll_to_row.is_some() && scroll_to_y_range.is_none() {
                     // TableBody::row didn't find the correct row, so scroll to the bottom:
                     scroll_to_y_range = Some(Rangef::new(f32::INFINITY, f32::INFINITY));
                 }
