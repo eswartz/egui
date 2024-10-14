@@ -347,8 +347,8 @@ impl<'a> TableBuilder<'a> {
         self
     }
 
-    /// Force scrolling to the bottom (only makes sense when stick_to_bottom is true).
-    /// Use to forget the sticky position from a previous manual scroll_to_row.
+    /// Force scrolling to the bottom (only makes sense when `stick_to_bottom` is true).
+    /// Use to forget the sticky position from a previous manual `scroll_to_row`.
     #[inline]
     pub fn force_to_bottom(mut self, force: bool) -> Self {
         self.scroll_options.force_to_bottom = force;
