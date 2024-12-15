@@ -39,7 +39,8 @@ impl Widget for Link {
         let Self { text } = self;
         let label = Label::new(text).sense(Sense::click());
 
-        let (galley_pos, galley, response) = label.layout_in_ui(ui);
+        let (galley_pos, galley, mut response) = label.layout_in_ui(ui);
+        response.rect = response.rect.expand2(ui.spacing().item_spacing);
         response
             .widget_info(|| WidgetInfo::labeled(WidgetType::Link, ui.is_enabled(), galley.text()));
 
@@ -47,7 +48,7 @@ impl Widget for Link {
             let color = ui.visuals().hyperlink_color;
             let visuals = ui.style().interact(&response);
 
-            let underline = if response.hovered() || response.has_focus() {
+            let underline = if ui.rect_contains_pointer(response.rect) || response.has_focus() {
                 Stroke::new(visuals.fg_stroke.width, color)
             } else {
                 Stroke::NONE
@@ -64,7 +65,7 @@ impl Widget for Link {
                 );
             }
 
-            if response.hovered() {
+            if ui.rect_contains_pointer(response.rect) {
                 ui.ctx().set_cursor_icon(CursorIcon::PointingHand);
             }
         }
