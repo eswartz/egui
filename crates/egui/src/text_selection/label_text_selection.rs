@@ -484,7 +484,7 @@ impl LabelSelectionState {
     ) -> Vec<RowVertexIndices> {
         let widget_id = response.id;
 
-        if response.hovered {
+        if ui.rect_contains_pointer(response.rect.expand2(ui.spacing().item_spacing)) {
             ui.ctx().set_cursor_icon(CursorIcon::Text);
         }
 
