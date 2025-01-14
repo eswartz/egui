@@ -455,7 +455,7 @@ impl Path {
             // and then only expand during feathering.
             //
             // See https://github.com/emilk/egui/issues/1226
-            const CUT_OFF_SHARP_CORNERS: bool = false;
+            const CUT_OFF_SHARP_CORNERS: bool = true;
 
             let right_angle_length_sq = 0.5;
             let sharper_than_a_right_angle = length_sq < right_angle_length_sq;
