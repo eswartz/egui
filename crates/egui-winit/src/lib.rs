@@ -764,7 +764,11 @@ impl State {
         // are mapped to the physical keys that normally contain C, X, V, etc.
         // See also: https://github.com/emilk/egui/issues/3653
         if let Some(active_key) = logical_key.or(physical_key) {
-            if pressed {
+            let suppress = self.egui_ctx.data(|d| {
+                d.get_temp::<bool>(egui::Id::new("suppress_cut_copy_paste"))
+                    .is_some_and(|b| b)
+            });
+            if pressed && !suppress {
                 if is_cut_command(self.egui_input.modifiers, active_key) {
                     self.egui_input.events.push(egui::Event::Cut);
                     return;
