@@ -76,6 +76,9 @@ pub enum Key {
     /// `+`
     Plus,
 
+    /// `*` (as generated from numeric keypad)
+    Star,
+
     /// `=`
     Equals,
 
@@ -188,9 +191,11 @@ pub enum Key {
     /// Android sends this key on Back button press.
     /// Does not work on Web.
     BrowserBack,
+
     Pause,
     ScrollLock,
     PrintScreen,
+
     // When adding keys, remember to also update:
     // * crates/egui-winit/src/lib.rs
     // * Key::ALL
@@ -212,6 +217,7 @@ impl Key {
         Self::Tab,
         Self::Backspace,
         Self::Enter,
+        Self::Space,
         Self::Insert,
         Self::Delete,
         Self::Home,
@@ -222,24 +228,24 @@ impl Key {
         Self::Cut,
         Self::Paste,
         // Punctuation:
-        Self::Space,
         Self::Colon,
         Self::Comma,
-        Self::Minus,
-        Self::Period,
-        Self::Plus,
-        Self::Equals,
-        Self::Semicolon,
-        Self::OpenBracket,
-        Self::CloseBracket,
-        Self::OpenCurlyBracket,
-        Self::CloseCurlyBracket,
-        Self::Backtick,
         Self::Backslash,
         Self::Slash,
         Self::Pipe,
         Self::Questionmark,
         Self::Exclamationmark,
+        Self::OpenBracket,
+        Self::CloseBracket,
+        Self::OpenCurlyBracket,
+        Self::CloseCurlyBracket,
+        Self::Backtick,
+        Self::Minus,
+        Self::Period,
+        Self::Plus,
+        Self::Star,
+        Self::Equals,
+        Self::Semicolon,
         Self::Quote,
         // Digits:
         Self::Num0,
@@ -361,6 +367,7 @@ impl Key {
             "-" | "−" | "Minus" => Self::Minus,
             "." | "Period" => Self::Period,
             "+" | "Plus" => Self::Plus,
+            "*" | "Star" | "NumpadStar" => Self::Star,
             "=" | "Equal" | "Equals" | "NumpadEqual" => Self::Equals,
             ";" | "Semicolon" => Self::Semicolon,
             "\\" | "Backslash" => Self::Backslash,
@@ -475,6 +482,7 @@ impl Key {
             Self::Period => ".",
             Self::Plus => "+",
             Self::Equals => "=",
+            Self::Star => "*",
             Self::Semicolon => ";",
             Self::Backslash => "\\",
             Self::Slash => "/",
@@ -522,6 +530,7 @@ impl Key {
             Self::Period => "Period",
             Self::Plus => "Plus",
             Self::Equals => "Equals",
+            Self::Star => "Star",
             Self::Semicolon => "Semicolon",
             Self::Backslash => "Backslash",
             Self::Slash => "Slash",
@@ -620,7 +629,7 @@ impl Key {
 fn test_key_from_name() {
     assert_eq!(
         Key::ALL.len(),
-        Key::BrowserBack as usize + 1,
+        Key::PrintScreen as usize + 1,
         "Some keys are missing in Key::ALL"
     );
 

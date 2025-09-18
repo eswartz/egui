@@ -1197,6 +1197,7 @@ fn key_from_key_code(key: winit::keyboard::KeyCode) -> Option<egui::Key> {
         KeyCode::Paste => Key::Paste,
         KeyCode::Minus | KeyCode::NumpadSubtract => Key::Minus,
         KeyCode::NumpadAdd => Key::Plus,
+        KeyCode::NumpadStar => Key::Star,
         KeyCode::Equal => Key::Equals,
 
         KeyCode::Digit0 | KeyCode::Numpad0 => Key::Num0,
